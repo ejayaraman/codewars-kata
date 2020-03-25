@@ -1,4 +1,4 @@
-name := "worksheet"
+name := "codewars-kata"
 
 version := "0.1"
 
