@@ -12,6 +12,8 @@
 
 object Evaporator {
   def evaporator(content: Double, evapPerDay: Int, threshold: Int): Int = {
+    val currentPercentage: Float = 100
+    val currentDay: Int = 0
 
     @scala.annotation.tailrec
     def evaporation(currentPercentage: Float, currentDay: Int): Int = {
@@ -22,6 +24,6 @@ object Evaporator {
       }
     }
 
-    evaporation(100, 0)
+    evaporation(currentPercentage, currentDay)
   }
 }
