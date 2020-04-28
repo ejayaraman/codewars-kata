@@ -1,21 +1,18 @@
 object Stat {
 
   def stat(results: String): String = {
-    val resultsInSeconds = results.split(",").map(convertToSeconds).sorted
-    val average = (resultsInSeconds.sum) / resultsInSeconds.length
-    val range = (resultsInSeconds.max - resultsInSeconds.min)
-    val median = if (resultsInSeconds.length % 2 != 0) {
-      resultsInSeconds((resultsInSeconds.length / 2))
-    } else {
-      (resultsInSeconds(resultsInSeconds.length / 2) + resultsInSeconds((resultsInSeconds.length / 2) - 1)) / 2
-    }
-    s"Range: ${secondsToNotion(range)} Average: ${secondsToNotion(average)} Median: ${secondsToNotion(median)}"
-
+    val resultsInSeconds = results.split(",").map(convertToSeconds).sorted.toList
+    val average = resultsInSeconds.sum / resultsInSeconds.length
+    val range = resultsInSeconds.max - resultsInSeconds.min
+    s"Range: ${secondsToNotion(range)} Average: ${secondsToNotion(average)} Median: ${secondsToNotion(median(resultsInSeconds))}"
   }
 
   def convertToSeconds(result: String): Long = {
-    val temp = result.split('|').map(_.trim.toLong)
-    temp(0) * 3600 + temp(1) * 60 + temp(2)
+    val resultPattern = """\s*(\d+)\|\s*(\d+)\|\s*(\d+)""".r
+    result match {
+      case resultPattern(hours, minutes, seconds) => hours.toLong * 3600 + minutes.toLong * 60 + seconds.toLong
+    }
+
   }
 
   def secondsToNotion(seconds: Long): String = {
@@ -24,5 +21,15 @@ object Stat {
     val second = (seconds % 3600) % 60
 
     f"$hour%02d|$minutes%02d|$second%02d"
+  }
+
+  def median(resultsInSeconds: List[Long]): Long = {
+    val numberOfResults = resultsInSeconds.length
+    val medianIndex = numberOfResults / 2
+    if (numberOfResults % 2 != 0) {
+      resultsInSeconds(medianIndex)
+    } else {
+      (resultsInSeconds(medianIndex) + resultsInSeconds(medianIndex - 1)) / 2
+    }
   }
 }
