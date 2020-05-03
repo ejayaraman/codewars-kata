@@ -2,15 +2,18 @@ object EnoughIsEnough {
 
   def deleteNth(elements: List[Int], maxOccurrences: Int): List[Int] = {
 
-    val toDeleteIndexes = elements.flatMap {
-      value =>
-        elements.zipWithIndex.filter(_._1 == value && elements.count(_ == value) > maxOccurrences).map(_._2).drop(maxOccurrences)
+    val zippedWithIndex = elements.zipWithIndex
+    val indexesToDelete = elements.flatMap {
+      element =>
+        zippedWithIndex.filter {
+          _._1 == element && elements.count(_ == element) > maxOccurrences
+        }.map(_._2).drop(maxOccurrences)
     }.toSet
 
 
-    elements.zipWithIndex.filterNot {
-      value =>
-        toDeleteIndexes.contains(value._2)
+    zippedWithIndex.filterNot {
+      case (element, index) =>
+        indexesToDelete.contains(index)
     }.map(_._1)
   }
 }
